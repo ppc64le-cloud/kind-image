@@ -6,10 +6,6 @@ name: Docker
 # documentation.
 
 on:
-  workflow_dispatch:
-  schedule:
-    # Build the job every day for the master branch
-    - cron: '0 0 * * *'
   push:
     branches: [ "main", 'v*.*.*' ]
     tags: [ 'v*.*.*' ]
@@ -26,12 +22,10 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
-    permissions:
-      packages: write
     strategy:
       fail-fast: false
       matrix:
-        version: ["master"]
+        version: ["v1.27.2"]
 
     steps:
       - name: Checkout repository
