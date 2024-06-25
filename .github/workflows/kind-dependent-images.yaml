@@ -1,0 +1,58 @@
+name: Build other kind images
+
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+    strategy:
+      fail-fast: false
+    env:
+      # Use docker.io for Docker Hub if empty
+      REGISTRY: quay.io
+      # github.repository as <account>/<repo>
+      IMAGE_NAME: powercloud/kind-node
+
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4.1.6
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Log into registry ${{ env.REGISTRY }}
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ secrets.QUAY_USERNAME }}
+          password: ${{ secrets.QUAY_PASSWORD }}
+
+      - name: Install dependencies
+        run: |
+          apt-get install git make -y
+
+      - name: Clone and patch kubernetes-sigs/kind repository
+        run: |
+          git clone -b build-wf https://github.com/kishen-v/kind-image.git
+          pushd kind-image
+          git clone --depth 1 --branch v0.23.0  https://github.com/kubernetes-sigs/kind.git
+          pushd kind
+          git apply ../build-ppc64le.patch
+
+      - name: Build dependent images
+        run: |
+          REGISTRY=quay.io/kviswana make -C images/local-path-provisioner push
+          REGISTRY=quay.io/kviswana make -C images/local-path-helper push
+          REGISTRY=quay.io/kviswana make -C images/base push
+          REGISTRY=quay.io/kviswana make -C images/kindnetd push
+          REGISTRY=quay.io/kviswana make -C images/haproxy push
