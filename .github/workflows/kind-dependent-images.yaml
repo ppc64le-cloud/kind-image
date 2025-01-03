@@ -20,7 +20,7 @@ jobs:
       IMAGE_REGISTRY: quay.io
 
       # Override Makefile default variables
-      REGISTRY: quay.io/powercloud
+      REGISTRY: quay.io/kviswana
       PLATFORMS: linux/ppc64le
 
     steps:
