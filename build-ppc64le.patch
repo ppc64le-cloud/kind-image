@@ -44,44 +44,4 @@ index f8226e1..dc9980f 100755
    *)
      exit 1 ;;
  esac
-diff --git a/pkg/build/nodeimage/const_cni.go b/pkg/build/nodeimage/const_cni.go
-index 1d06e05..4568afb 100644
---- a/pkg/build/nodeimage/const_cni.go
-+++ b/pkg/build/nodeimage/const_cni.go
-@@ -20,7 +20,7 @@ package nodeimage
- The default CNI manifest and images are our own tiny kindnet
- */
- 
--const kindnetdImage = "docker.io/kindest/kindnetd:v20240813-c6f155d6"
-+const kindnetdImage = "quay.io/kviswana/kind-kindnetd:v20240626-0296c52"
- 
- var defaultCNIImages = []string{kindnetdImage}
- 
-diff --git a/pkg/build/nodeimage/const_storage.go b/pkg/build/nodeimage/const_storage.go
-index d62c4ab..03815e0 100644
---- a/pkg/build/nodeimage/const_storage.go
-+++ b/pkg/build/nodeimage/const_storage.go
-@@ -25,8 +25,8 @@ NOTE: we have customized it in the following ways:
- - install as the default storage class
- */
- 
--const storageProvisionerImage = "docker.io/kindest/local-path-provisioner:v20240813-c6f155d6"
--const storageHelperImage = "docker.io/kindest/local-path-helper:v20230510-486859a6"
-+const storageProvisionerImage = "quay.io/kviswana/kind-local-path-provisioner:v20240626-0296c52"
-+const storageHelperImage = "quay.io/kviswana/kind-local-path-helper:v20240626-0296c52"
- 
- // image we need to preload
- var defaultStorageImages = []string{storageProvisionerImage, storageHelperImage}
-diff --git a/pkg/cluster/internal/loadbalancer/const.go b/pkg/cluster/internal/loadbalancer/const.go
-index 3600b33..e84bf8c 100644
---- a/pkg/cluster/internal/loadbalancer/const.go
-+++ b/pkg/cluster/internal/loadbalancer/const.go
-@@ -17,7 +17,7 @@ limitations under the License.
- package loadbalancer
- 
- // Image defines the loadbalancer image:tag
--const Image = "docker.io/kindest/haproxy:v20230606-42a2262b"
-+const Image = "quay.io/kviswana/kind-haproxy:v20240626-0296c52"
- 
- // ConfigPath defines the path to the config file in the image
- const ConfigPath = "/usr/local/etc/haproxy/haproxy.cfg"
+
