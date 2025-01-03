@@ -53,7 +53,7 @@ index 1d06e05..4568afb 100644
  */
  
 -const kindnetdImage = "docker.io/kindest/kindnetd:v20240813-c6f155d6"
-+const kindnetdImage = "quay.io/powercloud/kind-kindnetd:v20240626-0296c52"
++const kindnetdImage = "quay.io/kviswana/kind-kindnetd:v20240626-0296c52"
  
  var defaultCNIImages = []string{kindnetdImage}
  
@@ -67,8 +67,8 @@ index d62c4ab..03815e0 100644
  
 -const storageProvisionerImage = "docker.io/kindest/local-path-provisioner:v20240813-c6f155d6"
 -const storageHelperImage = "docker.io/kindest/local-path-helper:v20230510-486859a6"
-+const storageProvisionerImage = "quay.io/powercloud/kind-local-path-provisioner:v20240626-0296c52"
-+const storageHelperImage = "quay.io/powercloud/kind-local-path-helper:v20240626-0296c52"
++const storageProvisionerImage = "quay.io/kviswana/kind-local-path-provisioner:v20240626-0296c52"
++const storageHelperImage = "quay.io/kviswana/kind-local-path-helper:v20240626-0296c52"
  
  // image we need to preload
  var defaultStorageImages = []string{storageProvisionerImage, storageHelperImage}
@@ -81,7 +81,7 @@ index 3600b33..e84bf8c 100644
  
  // Image defines the loadbalancer image:tag
 -const Image = "docker.io/kindest/haproxy:v20230606-42a2262b"
-+const Image = "quay.io/powercloud/kind-haproxy:v20240626-0296c52"
++const Image = "quay.io/kviswana/kind-haproxy:v20240626-0296c52"
  
  // ConfigPath defines the path to the config file in the image
  const ConfigPath = "/usr/local/etc/haproxy/haproxy.cfg"
