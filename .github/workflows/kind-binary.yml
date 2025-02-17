@@ -1,0 +1,52 @@
+name: Build and Install KIND Binary
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    env:
+      KIND_VERSION: v0.26.0 # Specify the desired KIND version here
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Set up Go
+      uses: actions/setup-go@v3
+      with:
+        go-version: '1.20'  # Set the Go version to build KIND
+
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y make git
+
+    - name: Clone and build KIND
+      run: |
+        # Remove pre-installed KIND if exists
+        rm -rf $(which kind)
+        
+        # Clone the kind repo
+        git clone --depth 1 --branch ${{ env.KIND_VERSION }} https://github.com/kubernetes-sigs/kind.git
+        
+        # Apply any patches (if required)
+        pushd kind
+        git apply ../build-ppc64le.patch  # Apply patch if required
+        popd
+        
+        # Build and install KIND
+        make -C kind build
+
+    - name: Upload KIND binary as artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: kind-binary
+        path: kind/bin/kind
