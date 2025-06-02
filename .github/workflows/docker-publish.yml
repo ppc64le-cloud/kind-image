@@ -27,9 +27,9 @@ jobs:
       fail-fast: false
     env:
       # Use docker.io for Docker Hub if empty
-      REGISTRY: quay.io
+      REGISTRY: docker.io
       # github.repository as <account>/<repo>
-      IMAGE_NAME: powercloud/kind-node
+      IMAGE_NAME: vikasbolla25/kind-node
       # Until variables are available across different github_events as a feature,
       # this operation can set a default value for k8s-version to 'master'
       # https://github.com/orgs/community/discussions/26322#discussioncomment-3251442
