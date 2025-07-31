@@ -1,0 +1,68 @@
+name: Check for new Kubernetes releases
+
+on:
+  schedule:
+    - cron: '0 9 * * *'  # Daily at 09:00 UTC
+  workflow_dispatch:     # Allow manual runs
+
+jobs:
+  check-k8s:
+    runs-on: ubuntu-latest
+    env:
+      SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+      SLACK_CHANNEL_ID: ${{ secrets.SLACK_CHANNEL_ID }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install jq
+        run: sudo apt-get update && sudo apt-get install -y jq
+
+      - name: Fetch latest stable Kubernetes releases
+        id: fetch
+        run: |
+          curl -s "https://api.github.com/repos/kubernetes/kubernetes/releases?per_page=20" \
+            | jq -r '.[].tag_name' \
+            | grep -v -- '-alpha' | grep -v -- '-beta' | grep -v -- '-rc' \
+            | sort -V > new_releases.txt
+
+          [ -f .last_k8s_versions.txt ] || touch .last_k8s_versions.txt
+          comm -23 new_releases.txt <(sort -V .last_k8s_versions.txt) > new_versions.txt
+
+          echo "new_versions<<EOF" >> $GITHUB_OUTPUT
+          cat new_versions.txt >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Check if new versions exist
+        id: has_new
+        run: |
+          if [[ -s new_versions.txt ]]; then
+            echo "found=true" >> $GITHUB_OUTPUT
+          else
+            echo "found=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Send Slack notifications
+        if: steps.has_new.outputs.found == 'true'
+        run: |
+          while read -r version; do
+            echo "Notifying Slack for $version"
+            curl -X POST https://slack.com/api/chat.postMessage \
+              -H "Authorization: Bearer $SLACK_BOT_TOKEN" \
+              -H "Content-type: application/json" \
+              --data "{
+                \"channel\": \"$SLACK_CHANNEL_ID\",
+                \"text\": \"🚀 *New stable Kubernetes release detected:* $version\"
+              }"
+          done < new_versions.txt
+
+      - name: Save last known versions
+        if: steps.has_new.outputs.found == 'true'
+        run: |
+          cp new_releases.txt .last_k8s_versions.txt
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add .last_k8s_versions.txt
+          git commit -m "Update last seen Kubernetes versions"
+          git push
