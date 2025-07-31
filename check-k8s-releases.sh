@@ -4,8 +4,8 @@ LAST_VERSIONS_FILE=".last_k8s_versions.txt"
 
 echo "📡 Fetching latest stable Kubernetes versions..."
 
-# Fetch, filter out pre-releases, and sort
-curl -s "https://api.github.com/repos/kubernetes/kubernetes/releases?per_page=5" |
+# Fetch releases and sort them according to versions.
+curl -s "https://api.github.com/repos/kubernetes/kubernetes/releases?per_page=10" |
   jq -r '.[].tag_name' |
   grep -v -- '-alpha' | grep -v -- '-beta' | grep -v -- '-rc' |
   sort -V > new_releases.txt
