@@ -61,7 +61,18 @@ jobs:
                 \"text\": \"☸️ *New stable Kubernetes release detected:* $version\"
               }"
           done < compared_versions.txt
-
+      
+      - name: Trigger build for each new version
+        if: steps.has_new.outputs.found == 'true'
+        run: |
+          while read -r version; do
+            echo "Triggering build for $version"
+            curl -X POST \
+              -H "Accept: application/vnd.github+json" \
+              -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+              https://api.github.com/repos/${{ github.repository }}/dispatches \
+              -d "$(jq -nc --arg ver "$version" '{event_type:"trigger-k8s-build", client_payload:{k8s_version:$ver}}')"
+          done < compared_versions.txt
       - name: Save last known versions
         if: steps.has_new.outputs.found == 'true'
         run: |

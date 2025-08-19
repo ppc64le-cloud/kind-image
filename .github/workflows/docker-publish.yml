@@ -6,6 +6,8 @@ name: Docker
 # documentation.
 
 on:
+  repository_dispatch:
+      types: [trigger-k8s-build]
   workflow_dispatch:
     inputs:
       k8s-version:
