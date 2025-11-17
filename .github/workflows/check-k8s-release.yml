@@ -23,13 +23,13 @@ jobs:
           curl -s "https://api.github.com/repos/kubernetes/kubernetes/releases?per_page=10" \
             | jq -r '.[].tag_name' \
             | grep -v -- '-alpha' | grep -v -- '-beta' | grep -v -- '-rc' \
-            | sort -V > new_releases  # Sort them version-wise and save
+            | sort -V | sort > new_releases  # Sort them version-wise and save
 
           # Ensure the file with previously seen versions exists
           [ -f .last_k8s_versions ] || touch .last_k8s_versions
 
           # Sort the previously seen versions
-          sort -V .last_k8s_versions > last_k8s_versions.sorted
+          sort -V .last_k8s_versions | sort > last_k8s_versions.sorted
 
           # Print out the current and previous release lists
           echo "new_releases:"
