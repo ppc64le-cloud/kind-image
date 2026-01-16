@@ -13,7 +13,7 @@ index b896f5a3..0459224c 100755
  fi
  
 diff --git a/images/base/Dockerfile b/images/base/Dockerfile
-index bc0d495b..bf53c0d0 100644
+index 0cb1f8f2..df5687c8 100644
 --- a/images/base/Dockerfile
 +++ b/images/base/Dockerfile
 @@ -108,10 +108,10 @@ COPY --chmod=0755 scripts/third_party/gimme/gimme /usr/local/bin/
@@ -44,56 +44,43 @@ index f8226e15..dc9980f1 100755
    *)
      exit 1 ;;
  esac
-diff --git a/images/local-path-provisioner/Dockerfile b/images/local-path-provisioner/Dockerfile
-index df601536..29f3f216 100644
---- a/images/local-path-provisioner/Dockerfile
-+++ b/images/local-path-provisioner/Dockerfile
-@@ -23,7 +23,7 @@ ARG TARGETARCH GO_VERSION
- RUN eval "$(gimme "${GO_VERSION}")" \
-     && export GOTOOLCHAIN="go${GO_VERSION}" \
-     && cd local-path-provisioner \
--    && git fetch && git checkout "${VERSION}" \
-+    # && git fetch && git checkout "${VERSION}" \ # kind/images/local-path-provisioner/Makefile - Until v0.0.32 is released
-     && GOARCH=$TARGETARCH scripts/build \
-     && mv bin/local-path-provisioner-$TARGETARCH /usr/local/bin/local-path-provisioner \
-     && GOBIN=/usr/local/bin go install github.com/google/go-licenses@latest \
 diff --git a/pkg/build/nodeimage/const_cni.go b/pkg/build/nodeimage/const_cni.go
-index 79cd8e1e..b539c06a 100644
+index 53ecf589..b539c06a 100644
 --- a/pkg/build/nodeimage/const_cni.go
 +++ b/pkg/build/nodeimage/const_cni.go
 @@ -20,7 +20,7 @@ package nodeimage
  The default CNI manifest and images are our own tiny kindnet
  */
  
--const kindnetdImage = "docker.io/kindest/kindnetd:v20250512-df8de77b"
+-const kindnetdImage = "docker.io/kindest/kindnetd:v20251212-v0.29.0-alpha-105-g20ccfc88"
 +const kindnetdImage = "quay.io/powercloud/kind-kindnetd:v20250520-6cb9342"
  
  var defaultCNIImages = []string{kindnetdImage}
  
 diff --git a/pkg/build/nodeimage/const_storage.go b/pkg/build/nodeimage/const_storage.go
-index 0f4806bf..bc1ff3e0 100644
+index f8cc4912..bc1ff3e0 100644
 --- a/pkg/build/nodeimage/const_storage.go
 +++ b/pkg/build/nodeimage/const_storage.go
 @@ -26,8 +26,8 @@ NOTE: we have customized it in the following ways:
  - tolerate control plane scheduling taints
  */
  
--const storageProvisionerImage = "docker.io/kindest/local-path-provisioner:v20250214-acbabc1a"
--const storageHelperImage = "docker.io/kindest/local-path-helper:v20241212-8ac705d0"
+-const storageProvisionerImage = "docker.io/kindest/local-path-provisioner:v20251212-v0.29.0-alpha-105-g20ccfc88"
+-const storageHelperImage = "docker.io/kindest/local-path-helper:v20251211-v0.29.0-alpha-100-g82a92c5d"
 +const storageProvisionerImage = "quay.io/powercloud/kind-local-path-provisioner:v20250520-6cb9342"
 +const storageHelperImage = "quay.io/powercloud/kind-local-path-helper:v20250520-6cb9342"
  
  // image we need to preload
  var defaultStorageImages = []string{storageProvisionerImage, storageHelperImage}
 diff --git a/pkg/cluster/internal/loadbalancer/const.go b/pkg/cluster/internal/loadbalancer/const.go
-index 3600b338..0651b43c 100644
+index 0f9b1db6..0651b43c 100644
 --- a/pkg/cluster/internal/loadbalancer/const.go
 +++ b/pkg/cluster/internal/loadbalancer/const.go
 @@ -17,7 +17,7 @@ limitations under the License.
  package loadbalancer
  
  // Image defines the loadbalancer image:tag
--const Image = "docker.io/kindest/haproxy:v20230606-42a2262b"
+-const Image = "docker.io/kindest/haproxy:v20251211-v0.29.0-alpha-100-g82a92c5d"
 +const Image = "quay.io/powercloud/kind-haproxy:v20250520-6cb9342"
  
  // ConfigPath defines the path to the config file in the image
