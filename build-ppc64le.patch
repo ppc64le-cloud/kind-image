@@ -1,5 +1,5 @@
 diff --git a/hack/build/init-buildx.sh b/hack/build/init-buildx.sh
-index b896f5a3..0459224c 100755
+index bed4f91..9513692 100755
 --- a/hack/build/init-buildx.sh
 +++ b/hack/build/init-buildx.sh
 @@ -22,7 +22,8 @@ current_builder="$(docker buildx inspect)"
@@ -13,26 +13,27 @@ index b896f5a3..0459224c 100755
  fi
  
 diff --git a/images/base/Dockerfile b/images/base/Dockerfile
-index 0cb1f8f2..df5687c8 100644
+index 192e1ac..c57bf9a 100644
 --- a/images/base/Dockerfile
 +++ b/images/base/Dockerfile
-@@ -108,10 +108,10 @@ COPY --chmod=0755 scripts/third_party/gimme/gimme /usr/local/bin/
+@@ -109,11 +109,11 @@ COPY --chmod=0755 files/usr/local/bin/* /usr/local/bin/
+ COPY --chmod=0755 scripts/third_party/gimme/gimme /usr/local/bin/
  COPY --chmod=0755 scripts/target-cc /usr/local/bin/
  # tools needed at build-time only
- # first ensure we can install packages for both architectures
+-# first ensure we can install packages for both architectures
 -RUN dpkg --add-architecture arm64 && dpkg --add-architecture amd64 \
--    && clean-install bash ca-certificates curl git make pkg-config \
--    crossbuild-essential-amd64 crossbuild-essential-arm64 \
++# first ensure we can install packages for both architectures\
++RUN dpkg --add-architecture ppc64el && dpkg --add-architecture amd64 \
+     && clean-install bash ca-certificates curl git make pkg-config \
+-    build-essential crossbuild-essential-amd64 crossbuild-essential-arm64 \
 -    libseccomp-dev:amd64 libseccomp-dev:arm64
-+RUN dpkg --add-architecture ppc64el \
-+    && clean-install bash ca-certificates curl git make pkg-config gcc \
-+    crossbuild-essential-amd64 crossbuild-essential-ppc64el \
++    build-essential crossbuild-essential-amd64 crossbuild-essential-ppc64el \
 +    libseccomp-dev:amd64 libseccomp-dev:ppc64el
  # set by makefile to .go-version
  ARG GO_VERSION
  RUN eval "$(gimme "${GO_VERSION}")" \
 diff --git a/images/base/scripts/target-cc b/images/base/scripts/target-cc
-index f8226e15..dc9980f1 100755
+index f8226e1..dc9980f 100755
 --- a/images/base/scripts/target-cc
 +++ b/images/base/scripts/target-cc
 @@ -23,6 +23,8 @@ case $TARGETARCH in
@@ -44,44 +45,54 @@ index f8226e15..dc9980f1 100755
    *)
      exit 1 ;;
  esac
+diff --git a/images/local-path-helper/stage-binary-and-deps.sh b/images/local-path-helper/stage-binary-and-deps.sh
+index 88fac24..6837400 100755
+--- a/images/local-path-helper/stage-binary-and-deps.sh
++++ b/images/local-path-helper/stage-binary-and-deps.sh
+@@ -78,7 +78,7 @@ binary_to_libraries() {
+     | awk '{print $1}' \
+     `# linux-vdso.so.1 is a special virtual shared object from the kernel` \
+     `# see: http://man7.org/linux/man-pages/man7/vdso.7.html` \
+-    | grep -v 'linux-vdso.so.1'
++    | grep -v 'linux-vdso'
+ }
+ 
+ # main script logic
 diff --git a/pkg/build/nodeimage/const_cni.go b/pkg/build/nodeimage/const_cni.go
-index 53ecf589..b539c06a 100644
+index 80e9351..b539c06 100644
 --- a/pkg/build/nodeimage/const_cni.go
 +++ b/pkg/build/nodeimage/const_cni.go
 @@ -20,7 +20,7 @@ package nodeimage
  The default CNI manifest and images are our own tiny kindnet
  */
  
--const kindnetdImage = "docker.io/kindest/kindnetd:v20251212-v0.29.0-alpha-105-g20ccfc88"
+-const kindnetdImage = "docker.io/kindest/kindnetd:v20260528-9350166c"
 +const kindnetdImage = "quay.io/powercloud/kind-kindnetd:v20250520-6cb9342"
  
  var defaultCNIImages = []string{kindnetdImage}
  
 diff --git a/pkg/build/nodeimage/const_storage.go b/pkg/build/nodeimage/const_storage.go
-index f8cc4912..bc1ff3e0 100644
+index 2d1db53..bc1ff3e 100644
 --- a/pkg/build/nodeimage/const_storage.go
 +++ b/pkg/build/nodeimage/const_storage.go
 @@ -26,8 +26,8 @@ NOTE: we have customized it in the following ways:
  - tolerate control plane scheduling taints
  */
  
--const storageProvisionerImage = "docker.io/kindest/local-path-provisioner:v20251212-v0.29.0-alpha-105-g20ccfc88"
--const storageHelperImage = "docker.io/kindest/local-path-helper:v20251211-v0.29.0-alpha-100-g82a92c5d"
+-const storageProvisionerImage = "docker.io/kindest/local-path-provisioner:v20260521-9fb22683"
+-const storageHelperImage = "docker.io/kindest/local-path-helper:v20260131-7181c60a"
 +const storageProvisionerImage = "quay.io/powercloud/kind-local-path-provisioner:v20250520-6cb9342"
 +const storageHelperImage = "quay.io/powercloud/kind-local-path-helper:v20250520-6cb9342"
  
  // image we need to preload
  var defaultStorageImages = []string{storageProvisionerImage, storageHelperImage}
 diff --git a/pkg/cluster/internal/loadbalancer/const.go b/pkg/cluster/internal/loadbalancer/const.go
-index 0f9b1db6..0651b43c 100644
+index 95935c5..7cb5c22 100644
 --- a/pkg/cluster/internal/loadbalancer/const.go
 +++ b/pkg/cluster/internal/loadbalancer/const.go
-@@ -17,7 +17,7 @@ limitations under the License.
+@@ -17,4 +17,4 @@ limitations under the License.
  package loadbalancer
  
  // Image defines the loadbalancer image:tag
--const Image = "docker.io/kindest/haproxy:v20251211-v0.29.0-alpha-100-g82a92c5d"
-+const Image = "quay.io/powercloud/kind-haproxy:v20250520-6cb9342"
- 
- // ConfigPath defines the path to the config file in the image
- const ConfigPath = "/usr/local/etc/haproxy/haproxy.cfg"
+-const Image = "docker.io/envoyproxy/envoy:v1.36.2"
++const Image = "quay.io/kviswana/envoy:1.36.5"
