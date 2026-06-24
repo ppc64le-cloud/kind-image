@@ -17,7 +17,6 @@ jobs:
           - local-path-helper
           - base
           - kindnetd
-          - haproxy
 
     env:
       IMAGE_REGISTRY: quay.io
@@ -28,19 +27,19 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v6
 
-      - name: Log into registry ${{ env.IMAGE_REGISTRY }}
-        uses: docker/login-action@v4
-        with:
-          registry: ${{ env.IMAGE_REGISTRY }}
-          username: ${{ secrets.QUAY_USERNAME }}
-          password: ${{ secrets.QUAY_PASSWORD }}
-
       - name: Clone and patch kubernetes-sigs/kind repository
         run: |
           git clone --depth 1 --branch $(cat KIND_VERSION) https://github.com/kubernetes-sigs/kind.git
           cd kind
           git apply ../build-ppc64le.patch
           echo "TAG=$(date +v%Y%m%d)-$(git describe --always)" >> $GITHUB_ENV
+      
+      - name: Login to ${{ env.IMAGE_REGISTRY }} to push images.
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.IMAGE_REGISTRY }}
+          username: ${{ secrets.QUAY_USERNAME }}
+          password: ${{ secrets.QUAY_PASSWORD }}
 
       - name: Build kind-${{ matrix.component }}
         working-directory: ./kind

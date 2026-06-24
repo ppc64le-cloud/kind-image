@@ -33,7 +33,7 @@ jobs:
       # Until variables are available across different github_events as a feature,
       # this operation can set a default value for k8s-version to 'master'
       # https://github.com/orgs/community/discussions/26322#discussioncomment-3251442
-      K8S-VERSION: ${{ inputs.k8s-version || 'v1.31.0' }}
+      K8S-VERSION: ${{ inputs.k8s-version || 'v1.36.0' }}
 
 
     steps:
