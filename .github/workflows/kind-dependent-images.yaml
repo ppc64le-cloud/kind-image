@@ -35,7 +35,7 @@ jobs:
           echo "TAG=$(date +v%Y%m%d)-$(git describe --always)" >> $GITHUB_ENV
       
       - name: Login to ${{ env.IMAGE_REGISTRY }} to push images.
-        uses: docker/login-action@v3
+        uses: docker/login-action@v4
         with:
           registry: ${{ env.IMAGE_REGISTRY }}
           username: ${{ secrets.QUAY_USERNAME }}
