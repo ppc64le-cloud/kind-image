@@ -1,5 +1,5 @@
 diff --git a/hack/build/init-buildx.sh b/hack/build/init-buildx.sh
-index bed4f91..9513692 100755
+index bed4f91f..95136928 100755
 --- a/hack/build/init-buildx.sh
 +++ b/hack/build/init-buildx.sh
 @@ -22,7 +22,8 @@ current_builder="$(docker buildx inspect)"
@@ -13,7 +13,7 @@ index bed4f91..9513692 100755
  fi
  
 diff --git a/images/base/Dockerfile b/images/base/Dockerfile
-index 192e1ac..c57bf9a 100644
+index 64da2418..bd32f3cf 100644
 --- a/images/base/Dockerfile
 +++ b/images/base/Dockerfile
 @@ -109,11 +109,11 @@ COPY --chmod=0755 files/usr/local/bin/* /usr/local/bin/
@@ -33,7 +33,7 @@ index 192e1ac..c57bf9a 100644
  ARG GO_VERSION
  RUN eval "$(gimme "${GO_VERSION}")" \
 diff --git a/images/base/scripts/target-cc b/images/base/scripts/target-cc
-index f8226e1..dc9980f 100755
+index f8226e15..dc9980f1 100755
 --- a/images/base/scripts/target-cc
 +++ b/images/base/scripts/target-cc
 @@ -23,6 +23,8 @@ case $TARGETARCH in
@@ -46,7 +46,7 @@ index f8226e1..dc9980f 100755
      exit 1 ;;
  esac
 diff --git a/images/local-path-helper/stage-binary-and-deps.sh b/images/local-path-helper/stage-binary-and-deps.sh
-index 88fac24..6837400 100755
+index 88fac241..6837400f 100755
 --- a/images/local-path-helper/stage-binary-and-deps.sh
 +++ b/images/local-path-helper/stage-binary-and-deps.sh
 @@ -78,7 +78,7 @@ binary_to_libraries() {
@@ -59,27 +59,27 @@ index 88fac24..6837400 100755
  
  # main script logic
 diff --git a/pkg/build/nodeimage/const_cni.go b/pkg/build/nodeimage/const_cni.go
-index 80e9351..b539c06 100644
+index 40f12801..4c99bdda 100644
 --- a/pkg/build/nodeimage/const_cni.go
 +++ b/pkg/build/nodeimage/const_cni.go
 @@ -20,7 +20,7 @@ package nodeimage
  The default CNI manifest and images are our own tiny kindnet
  */
  
--const kindnetdImage = "docker.io/kindest/kindnetd:v20260528-9350166c"
+-const kindnetdImage = "docker.io/kindest/kindnetd:v20260820-69b56db7"
 +const kindnetdImage = "quay.io/powercloud/kind-kindnetd:v20260624-v0.32.0"
  
  var defaultCNIImages = []string{kindnetdImage}
  
 diff --git a/pkg/build/nodeimage/const_storage.go b/pkg/build/nodeimage/const_storage.go
-index 2d1db53..bc1ff3e 100644
+index 1c5fea23..27d4db8c 100644
 --- a/pkg/build/nodeimage/const_storage.go
 +++ b/pkg/build/nodeimage/const_storage.go
 @@ -26,8 +26,8 @@ NOTE: we have customized it in the following ways:
  - tolerate control plane scheduling taints
  */
  
--const storageProvisionerImage = "docker.io/kindest/local-path-provisioner:v20260521-9fb22683"
+-const storageProvisionerImage = "docker.io/kindest/local-path-provisioner:v20260820-69b56db7"
 -const storageHelperImage = "docker.io/kindest/local-path-helper:v20260131-7181c60a"
 +const storageProvisionerImage = "quay.io/powercloud/kind-local-path-provisioner:v20260624-v0.32.0"
 +const storageHelperImage = "quay.io/powercloud/kind-local-path-helper:v20260624-v0.32.0"
@@ -87,7 +87,7 @@ index 2d1db53..bc1ff3e 100644
  // image we need to preload
  var defaultStorageImages = []string{storageProvisionerImage, storageHelperImage}
 diff --git a/pkg/cluster/internal/loadbalancer/const.go b/pkg/cluster/internal/loadbalancer/const.go
-index 95935c5..7cb5c22 100644
+index 95935c57..74c2cd73 100644
 --- a/pkg/cluster/internal/loadbalancer/const.go
 +++ b/pkg/cluster/internal/loadbalancer/const.go
 @@ -17,4 +17,4 @@ limitations under the License.

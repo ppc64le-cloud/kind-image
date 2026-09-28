@@ -9,5 +9,7 @@ If you're looking for building a node image with the latest stable version of Ku
 ------ 
 Images are hosted at https://quay.io/repository/powercloud/kind-node?tab=tags and can be used as follows:
 ```shell
-$ kind create cluster --image quay.io/powercloud/kind-node:v1.30.2
+$ kind create cluster --image quay.io/powercloud/kind-node:v1.37.0
 ```
+
+Other configurable flags exposed from kind can also be used (for example, `--config` for passing a config file, etc.). For more information, refer to the [kind configuration guide](https://kind.sigs.k8s.io/docs/user/configuration/).
