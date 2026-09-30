@@ -67,7 +67,7 @@ index 40f12801..4c99bdda 100644
  */
  
 -const kindnetdImage = "docker.io/kindest/kindnetd:v20260820-69b56db7"
-+const kindnetdImage = "quay.io/powercloud/kind-kindnetd:v20260624-v0.32.0"
++const kindnetdImage = "quay.io/powercloud/kind-kindnetd:v20260928-v0.33.0"
  
  var defaultCNIImages = []string{kindnetdImage}
  
@@ -81,8 +81,8 @@ index 1c5fea23..27d4db8c 100644
  
 -const storageProvisionerImage = "docker.io/kindest/local-path-provisioner:v20260820-69b56db7"
 -const storageHelperImage = "docker.io/kindest/local-path-helper:v20260131-7181c60a"
-+const storageProvisionerImage = "quay.io/powercloud/kind-local-path-provisioner:v20260624-v0.32.0"
-+const storageHelperImage = "quay.io/powercloud/kind-local-path-helper:v20260624-v0.32.0"
++const storageProvisionerImage = "quay.io/powercloud/kind-local-path-provisioner:v20260928-v0.33.0"
++const storageHelperImage = "quay.io/powercloud/kind-local-path-helper:v20260928-v0.33.0"
  
  // image we need to preload
  var defaultStorageImages = []string{storageProvisionerImage, storageHelperImage}
